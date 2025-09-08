@@ -43,7 +43,7 @@ export function Header() {
           <img
             src="/Adagin-logo.svg"
             alt="AdaginTech"
-            className="h-11 w-auto md:h-12"
+            className="h-11 w-auto md:h-20"
           />
           <div className="truncate leading-tight">
             {/* Desktop title */}
@@ -87,10 +87,10 @@ export function Header() {
 
           {/* Account + updated time */}
           <div className="h-10 px-2 flex flex-col justify-center leading-tight">
-            <span className="text-[11px] opacity-90">
+            <span className="text-[13px] opacity-90">
               Logged in as admin@huttonsquire.com
             </span>
-            <span className="text-[11px] opacity-80 flex items-center gap-1">
+            <span className="text-[13px] opacity-80 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Updated:&nbsp;
               {lastSync.toLocaleTimeString("en-US", {
