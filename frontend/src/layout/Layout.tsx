@@ -1,26 +1,24 @@
-import { ReactNode } from 'react';
-import { Header } from './Header';
-import { Footer } from './Footer';
+import { ReactNode } from "react";
+import { Header } from "./Header";
+import { Footer } from "./Footer";
 
 interface LayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 /**
- * A basic layout component that provides the structural framework for the page.
- * It remains stateless and simply renders its children, header, and footer.
+ * Page shell using Adagin theme colors (light background, navy header/footer).
  */
 export function Layout({ children }: LayoutProps) {
-    return (
-        <div className="min-h-screen bg-background-dark flex flex-col">
-            {/* The Header component now handles its own state for navigation props */}
-            <Header />
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
 
-            <main className="flex-1">
-                {children}
-            </main>
+      <main className="flex-1">
+        {children}
+      </main>
 
-            <Footer />
-        </div>
-    );
+      <Footer />
+    </div>
+  );
 }

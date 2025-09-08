@@ -1,67 +1,87 @@
-# Digital ChalkboardV! - AdaginTech
+#  Digital Chalkboard V1 – AdaginTech
 
-PoC__Proof of Concept__Real-time agricultural bin tracking dashboard for Metaship.ai integration.
+**Proof of Concept**: Real-time digital chalkboard for **bin tracking at depots**, starting with **Hutton Squire depot**.
+This app will serve as a microfrontend, deployed independently, and styled with the **AdaginTech theme pack**.
 
-## Tech Stack
-- React 18 + TypeScript
-- Vite + Tailwind CSS
-- Recharts for data visualization
-- Deployed on Render.com
+---
+
+##  Tech Stack
+
+* **React 18 + TypeScript** (SPA, microfrontend ready)
+* **Vite + Tailwind CSS** (with AdaginTech theme applied)
+* **Recharts** (for visual bin tracking)
+* **Render.com** (deployment target – static site)
+
+---
 
 ## Quick Start
 
 ```bash
-# Install dependencies at root level, workspaces defined in root package.json "workspaces":
-# [
-#   "frontend",
-#   "backend"
-# ],
-# do this in root, not in frontend and backend
+# Install dependencies at root
 npm install
 
-# Run development server, no backend needed
+# Run frontend (no backend required yet)
 cd frontend
 npm run dev
-
 ```
 
-## Deployment to Render
+---
 
-Push to GitHub and Render auto-deploys with `render.yaml` as blueprint
-reverted to putting those commands in settings manually and then deploy worked as static page. 
+##  Deployment to Render
 
+* Repo pushed to GitHub.
+* Render set up as **static site** for `/frontend`.
+* Auto-deploy on push (manual settings override `render.yaml` for now).
+
+---
 
 ## Features
-- Live data tracking for 2 farms (Welgelegen, Boplaas) and 5 PUC's
-- 5 apple varieties tracking, even if out of season 
-- The apple harvesting season in the Western Cape generally runs from late January to late May. 
-- The peak harvest period is typically from February to April.
-- Real-time updates with current date/time (mocked to check current date)
-- Mobile responsive PWA 
-- Historical analysis (weekly/monthly/quarterly)
-- Coming soon: ML-powered projections
 
-## Structure
+* Digital board for **Hutton Squire depot**
+* Depot **selector** (dropdown with 6 depots available – PoC shows Hutton Squire)
+* **Mock data refresh**: randomized bins & picker stats on each reload → mimics streaming data
+* KPI cards (e.g., *Total Bins*, *Active Pickers*, *Progress*, *QC Flags*)
+* Team performance table (per team: bins, pickers, average per picker, target, status)
+* Mobile responsive (usable on tablet in depot office or phone in the field)
+
+---
+
+##  Theming
+
+AdaginTech theme applied (per design system):
+
+* Background: `#DAE8C8`
+* Primary Blue: `#5a7784`
+* Accent Green: `#a4cc4c`
+* Navy: `#284350`
+* Typography: **Arial Nova**, minimal Apple-like styling
+
+---
+
+##  Structure
+
 ```
-Mono repo
 frontend/
-├── public/
-│   └── adagin-logo.svg
+├── public/                # Adagin logos, icons
 ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── data/
+│   ├── components/        # Charts, widgets, depot selector
+│   ├── data/              # Mock data (randomized each reload)
+│   ├── layout/            # Header, Footer, Layout
+│   ├── pages/             # Dashboard.tsx (Hutton Squire board)
 │   └── App.tsx
 └── package.json
 ```
 
-## TODO:
-Current mock Datamodel document... 
-API & Domain setup
-Hubspot
-getting daily data from Adagin 
-Make sure its mobile nav & main nav compatible
+---
 
+## 🔮 Roadmap
+
+* Add **live API integration** (Azure DevOps DB → Frontend API)
+* Extend chalkboard to **6 depots**
+* Real-time **bin streaming** feed
+* Microfrontend integration with other Adagin apps
 
 ---
-© 2025 AdaginTech × Metaship.ai
+
+© 2025 **AdaginTech** × Digital Chalkboard
+

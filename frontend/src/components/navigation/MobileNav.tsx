@@ -1,101 +1,124 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, Activity, Calendar, RefreshCw } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Menu, X, RefreshCw, Wifi, Clock } from "lucide-react";
+import CustomDropdown from "../../components/ui/CustomDropdown";
 
-interface MobileNavProps {
-    lastSync: Date;
-    isRefreshing: boolean;
-    onRefresh: () => void;
+const DEPOTS = [
+  "Hutton Squire 1",
+  "Hutton Squire 2",
+  "Hutton Squire 3",
+  "Hutton Squire 4",
+  "Hutton Squire 5",
+  "Hutton Squire 6",
+];
+
+interface Props {
+  lastSync: Date;
+  isRefreshing: boolean;
+  onRefresh: () => void;
+  depot: string;
+  setDepot: (d: string) => void;
 }
 
-export function MobileNav({ lastSync, isRefreshing, onRefresh }: MobileNavProps) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [currentTime, setCurrentTime] = useState(new Date());
+export function MobileNav({ lastSync, isRefreshing, onRefresh, depot, setDepot }: Props) {
+  const [open, setOpen] = useState(false);
+  const [now, setNow] = useState(new Date());
 
-    useEffect(() => {
-        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
-    const toggleMenu = () => setIsOpen(!isOpen);
+  return (
+    <>
+      {/* Toggle */}
+      <button
+        onClick={() => setOpen(true)}
+        className="p-2 text-white hover:bg-white/10 rounded-md focus-ring"
+        aria-label="Open menu"
+      >
+        <Menu className="w-6 h-6" />
+      </button>
 
-    return (
-        <>
-            <div className="flex items-center space-x-4">
-                <button
-                    onClick={toggleMenu}
-                    className="p-2 text-white hover:bg-grey-darker rounded-lg transition-colors focus:outline-none focus:ring-0 focus:ring-offset-0"
-                    aria-label="Toggle menu"
-                >
-                    {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
+      {/* Drawer */}
+      <aside
+        className={`fixed inset-y-0 right-0 w-72 bg-white text-navy rounded-l-md shadow-xl z-50 transform transition-transform duration-300 ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Header bar */}
+        <div className="p-4 border-b flex items-center justify-between">
+          <h2 className="font-semibold text-sm">
+            Bin Tracking — <span className="font-bold">{depot}</span>
+          </h2>
+          <button
+            onClick={() => setOpen(false)}
+            className="p-2 rounded-md hover:bg-gray-100 focus-ring"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Drawer content */}
+        <div className="p-4 space-y-4 overflow-y-auto no-scrollbar">
+          {/* Online + Sync */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Wifi className="w-4 h-4" />
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success/70"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-success"></span>
+              </span>
+              <span className="text-sm">Online</span>
             </div>
-            {isOpen && (
-                <>
-                    <div
-                        className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                        onClick={() => setIsOpen(false)}
-                    />
-                    <div className="fixed top-0 right-0 h-full w-80 bg-background-accent border-none z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto flex flex-col justify-between">
-                        <div className="p-6 flex-1">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-white text-lg font-semibold">System Dashboard</h2>
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="p-2 text-white hover:bg-grey-darker rounded-lg focus:outline-none focus:ring-0 focus:ring-offset-0"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
-                            <div className="mb-6 flex items-center justify-between">
-                                <div className="flex items-center space-x-1">
-                                    <div className="relative">
-                                        <span className="absolute inline-flex h-3 w-3 rounded-full bg-green-500 opacity-75 animate-ping"></span>
-                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
-                                    </div>
-                                    <span className="text-sm font-medium text-green-500">LIVE</span>
-                                </div>
-                                <button
-                                    onClick={onRefresh}
-                                    className="flex items-center space-x-1 p-2 bg-grey-raised hover:bg-grey-darker rounded-lg transition-all focus:outline-none focus:ring-0 focus:ring-offset-0"
-                                    title="Refresh Data"
-                                >
-                                    <RefreshCw className={`w-4 h-4 text-white ${isRefreshing ? 'animate-spin' : ''}`} />
-                                    <span className="text-sm font-semibold text-white">SYNC</span>
-                                </button>
-                            </div>
-                            <div className="space-y-3">
-                                <div className="bg-grey-raised rounded-lg p-3">
-                                    <div className="flex items-center space-x-2">
-                                        <Calendar className="w-4 h-4 text-grey-contrast" />
-                                        <div>
-                                            <div className="text-white text-sm font-medium">
-                                                {currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                                            </div>
-                                            <div className="text-grey-contrast text-xs">
-                                                {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="bg-grey-raised rounded-lg p-3">
-                                    <div className="flex items-center space-x-2">
-                                        <Activity className="w-4 h-4 text-grey-contrast" />
-                                        <div>
-                                            <div className="text-white text-sm font-medium">Last Sync</div>
-                                            <div className="text-grey-contrast text-xs">
-                                                {lastSync.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="p-6 pt-0 text-center text-grey-contrast text-sm">
-                            <p>Powered by Adagintech.com <span className="text-secondary">×</span> Metaship.ai</p>
-                        </div>
-                    </div>
-                </>
-            )}
-        </>
-    );
+
+            <button
+              onClick={onRefresh}
+              className="px-3 py-1 rounded-md bg-primary text-white hover:brightness-95 focus-ring flex items-center gap-1"
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
+              <span className="text-sm font-semibold">Sync</span>
+            </button>
+          </div>
+
+          {/* Date & Time */}
+          <div className="bg-gray-50 rounded-md p-3 flex items-center gap-2">
+            <Clock className="w-4 h-4" />
+            <div>
+              <div className="text-sm">
+                {now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
+              </div>
+              <div className="text-xs opacity-80">
+                {now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+              </div>
+            </div>
+          </div>
+
+          {/* Logged in */}
+          <div className="text-xs opacity-80">
+            Logged in as <span className="font-medium">admin@huttonsquire.com</span>
+            <div className="flex items-center gap-1 mt-1">
+              <Clock className="w-3 h-3" />
+              Updated:&nbsp;
+              {lastSync.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer + Dropdown */}
+        <div className="p-3 border-t text-center text-xs opacity-70 space-y-3">
+          <p>© 2025 AdaginTech · Hutton Squire</p>
+          <div className="flex justify-center">
+            <CustomDropdown options={DEPOTS} value={depot} onChange={setDepot} />
+          </div>
+        </div>
+      </aside>
+
+      {/* Backdrop */}
+      {open && <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setOpen(false)} />}
+    </>
+  );
 }

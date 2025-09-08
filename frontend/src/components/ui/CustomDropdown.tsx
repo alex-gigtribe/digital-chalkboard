@@ -4,7 +4,6 @@ interface CustomDropdownProps {
   options: string[];
   value: string;
   onChange: (value: string) => void;
-  label: string;
   disabled?: boolean;
 }
 
@@ -12,7 +11,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
   value,
   onChange,
-  label,
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,18 +41,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
     setIsOpen(false);
   };
 
-  const getButtonText = () => {
-    if (value === "all") return label;
-    if (label === "All PUCs") return `PUC ${value}`;
-    return value;
-  };
-
-  const getListItemText = (option: string) => {
-    if (option === "all") return label;
-    if (label === "All PUCs") return `PUC ${option}`;
-    return option;
-  };
-
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Trigger Button */}
@@ -64,20 +50,19 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className={`bg-grey-raised text-white px-4 py-2 rounded-lg transition-colors text-sm shadow-sm
-                   hover:bg-grey-darker focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50
-                   flex items-center justify-between min-w-[150px] border border-transparent
-                   ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+        className={`px-4 py-2 h-10 min-w-[160px] flex items-center justify-between rounded-md
+          border border-primary bg-white text-navy text-sm shadow-sm transition-colors
+          focus:outline-none focus:ring-2 focus:ring-primary
+          ${disabled ? "opacity-50 cursor-not-allowed" : "hover:border-secondary"}`}
       >
-        {getButtonText()}
+        {value}
         <svg
-          className={`w-4 h-4 ml-2 transition-transform transform-gpu duration-200 ${
+          className={`w-4 h-4 ml-2 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
         >
           <path
             strokeLinecap="round"
@@ -91,7 +76,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
       {/* Dropdown Menu */}
       {isOpen && (
         <div
-          className="absolute z-10 mt-1 w-full rounded-lg bg-grey-raised shadow-lg border border-transparent
+          className="absolute z-10 mt-1 w-full rounded-md bg-white border border-primary shadow-lg
                      max-h-60 overflow-y-auto no-scrollbar"
           role="listbox"
         >
@@ -102,14 +87,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 role="option"
                 aria-selected={option === value}
                 onClick={() => handleSelect(option)}
-                className={`px-4 py-2 cursor-pointer text-sm transition-colors duration-100
-                           ${
-                             option === value
-                               ? "bg-grey-darker text-white"
-                               : "hover:bg-grey-darker hover:text-white text-grey-contrast"
-                           }`}
+                className={`px-4 py-2 cursor-pointer text-sm rounded-sm
+                  ${
+                    option === value
+                      ? "bg-primary text-white"
+                      : "text-navy hover:bg-background hover:text-navy"
+                  }`}
               >
-                {getListItemText(option)}
+                {option}
               </li>
             ))}
           </ul>
