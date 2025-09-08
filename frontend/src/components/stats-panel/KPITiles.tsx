@@ -1,36 +1,11 @@
-import { mockTeams, withAvg } from "../../data/mockTeams";
+// src/components/stats-panel/KPITiles.tsx
+import { getKPIs } from "../../data/mockStats";
+import { useDepot } from "../context/DepotContext";
 
 export function KPITiles() {
-  const teams = withAvg(mockTeams);
-
-  // Totals
-  const totalBins = teams.reduce((sum, t) => sum + t.bins, 0);
-  const totalPickers = teams.reduce((sum, t) => sum + t.pickers, 0);
-  const totalTarget = teams.reduce((sum, t) => sum + t.target, 0);
-  const totalAvg = totalBins / totalPickers;
-
-  const tiles = [
-    {
-      value: totalBins,
-      label: "Total Bins Harvested",
-      color: "text-success",
-    },
-    {
-      value: totalPickers,
-      label: "Active Pickers",
-      color: "text-navy",
-    },
-    {
-      value: `${((totalBins / totalTarget) * 100).toFixed(1)}%`,
-      label: "Daily Target Progress",
-      color: "text-primary",
-    },
-    {
-      value: totalAvg.toFixed(1),
-      label: "Avg / Picker",
-      color: "text-danger",
-    },
-  ];
+  const { depot } = useDepot();
+  const kpis = getKPIs(depot);
+  const tiles = [kpis.bins, kpis.pickers, kpis.progress, kpis.qcFlags];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-6">
@@ -41,6 +16,14 @@ export function KPITiles() {
         >
           <div className={`text-2xl font-bold ${t.color}`}>{t.value}</div>
           <div className="text-sm text-navy/80">{t.label}</div>
+          <div className="text-xs mt-1">
+            <span
+              className={`${t.delta.includes("-") ? "text-danger" : "text-success"} font-semibold`}
+            >
+              {t.delta.includes("%") ? t.delta : `${t.delta}`}
+              {t.delta.includes("-") ? " ↓" : " ↑"}
+            </span>
+          </div>
         </div>
       ))}
     </div>

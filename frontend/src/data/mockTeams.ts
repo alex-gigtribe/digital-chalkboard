@@ -6,23 +6,24 @@ export interface Team {
   avg?: number;
 }
 
-export const mockTeams: Team[] = [
-  { name: "Team A", bins: 122, pickers: 5, target: 5 * 24 },
-  { name: "Team B", bins: 97, pickers: 4, target: 4 * 24 },
-  { name: "Team C", bins: 110, pickers: 5, target: 5 * 24 },
-  { name: "Team D", bins: 68, pickers: 3, target: 3 * 24 },
-  { name: "Team E", bins: 142, pickers: 6, target: 6 * 24 },
-  { name: "Team F", bins: 82, pickers: 4, target: 4 * 24 },
-  { name: "Team G", bins: 76, pickers: 3, target: 3 * 24 },
-  { name: "Team H", bins: 133, pickers: 6, target: 6 * 24 },
-  { name: "Team I", bins: 92, pickers: 4, target: 4 * 24 },
-  { name: "Team J", bins: 117, pickers: 5, target: 5 * 24 },
-];
+export function mockTeams(_depot: string = "Hutton Squire 1"): Team[] {
+  return Array.from({ length: 10 }).map((_, idx) => {
+    const pickers = Math.floor(Math.random() * 3) + 3; // 3–5 pickers
+    const target = pickers * 24;
+    let bins = Math.floor(target * (0.9 + Math.random() * 0.3)); // 90–120%
 
-// Utility: add averages
+    // Force exactly 2 teams below target
+    if (idx < 2) bins = Math.floor(target * (0.8 + Math.random() * 0.1));
+
+    return {
+      name: `Team ${String.fromCharCode(65 + idx)}`, 
+      bins,
+      pickers,
+      target,
+    };
+  });
+}
+
 export function withAvg(teams: Team[]): Team[] {
-  return teams.map((t) => ({
-    ...t,
-    avg: t.bins / t.pickers,
-  }));
+  return teams.map((t) => ({ ...t, avg: t.bins / t.pickers }));
 }

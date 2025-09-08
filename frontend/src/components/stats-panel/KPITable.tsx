@@ -1,7 +1,9 @@
-import { mockTeams, withAvg } from "../../data/mockTeams";
+import { mockTeams, withAvg, Team } from "../../data/mockTeams";
+import { useDepot } from "../../components/context/DepotContext";
 
 export function KPITable() {
-  const teams = withAvg(mockTeams);
+  const { depot } = useDepot();
+  const teams: Team[] = withAvg(mockTeams(depot));
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "short",
@@ -9,12 +11,21 @@ export function KPITable() {
     day: "numeric",
   });
 
+  const totals = teams.reduce(
+    (acc, t) => {
+      acc.bins += t.bins;
+      acc.pickers += t.pickers;
+      acc.target += t.target;
+      return acc;
+    },
+    { bins: 0, pickers: 0, target: 0 }
+  );
+
+  const avgPerPicker = totals.bins / totals.pickers;
+
   return (
     <div className="bg-white rounded-md shadow-subtle overflow-hidden">
-      <div className="px-4 py-3 border-b text-sm font-semibold text-navy">
-        Team Performance
-      </div>
-
+      <div className="px-4 py-3 border-b text-sm font-semibold text-navy">Team Performance</div>
       <div className="overflow-x-auto no-scrollbar">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-50">
@@ -28,7 +39,6 @@ export function KPITable() {
               <th className="px-4 py-2 text-right">Status</th>
             </tr>
           </thead>
-
           <tbody>
             {teams.map((team, idx) => {
               const above = team.bins >= team.target;
@@ -39,9 +49,7 @@ export function KPITable() {
                   <td className="px-4 py-2 text-right">{team.bins}</td>
                   <td className="px-4 py-2 text-right">{team.pickers}</td>
                   <td className="px-4 py-2 text-right">{team.avg?.toFixed(1)}</td>
-                  <td className="px-4 py-2 text-right font-semibold text-success">
-                    {team.target}
-                  </td>
+                  <td className="px-4 py-2 text-right font-semibold text-success">{team.target}</td>
                   <td className="px-4 py-2 text-right">
                     {above ? (
                       <span className="px-2 py-1 rounded-md bg-success/20 text-success text-xs font-medium">
@@ -56,11 +64,18 @@ export function KPITable() {
                 </tr>
               );
             })}
+            <tr className="font-semibold bg-gray-100">
+              <td className="px-4 py-2">{today}</td>
+              <td className="px-4 py-2">TOTAL</td>
+              <td className="px-4 py-2 text-right">{totals.bins}</td>
+              <td className="px-4 py-2 text-right">{totals.pickers}</td>
+              <td className="px-4 py-2 text-right">{avgPerPicker.toFixed(1)}</td>
+              <td className="px-4 py-2 text-right">{totals.target}</td>
+              <td className="px-4 py-2 text-right">—</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   );
 }
-
-export default KPITable;
