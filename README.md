@@ -1,4 +1,4 @@
-# Digital Chalkboard - AdaginTech
+# Digital ChalkboardV! - AdaginTech
 
 PoC__Proof of Concept__Real-time agricultural bin tracking dashboard for Metaship.ai integration.
 
