@@ -1,0 +1,21 @@
+# This at root level ignores ALL .env files in any subfolder
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+
+# Other ignores
+node_modules/
+**/node_modules/
+dist/
+build/
+*.tsbuildinfo
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+sql
+sql/

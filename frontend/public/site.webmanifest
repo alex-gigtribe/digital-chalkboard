@@ -1,0 +1,34 @@
+{
+  "name": "Bin Tracker",
+  "short_name": "Bin Tracker",
+  "start_url": "/",
+  "lang": "en",
+  "display": "standalone",
+  "background_color": "#f1e3cd",
+  "theme_color": "#ffffff",
+  "description": "Adagin x Metaship Bin Tracker",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+    
+  ]
+}
