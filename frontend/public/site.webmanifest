@@ -1,12 +1,12 @@
 {
-  "name": "Bin Tracker",
-  "short_name": "Bin Tracker",
+  "name": "DigiChalk",
+  "short_name": "DigiChalk",
   "start_url": "/",
   "lang": "en",
   "display": "standalone",
   "background_color": "#f1e3cd",
   "theme_color": "#ffffff",
-  "description": "Adagin x Metaship Bin Tracker",
+  "description": "Adagin Digital Chalkboard",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

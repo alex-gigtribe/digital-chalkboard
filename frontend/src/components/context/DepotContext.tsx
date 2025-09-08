@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+// src/context/DepotContext.tsx
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
-const DEPOTS = [
+export const DEPOTS = [
   "Hutton Squire 1",
   "Hutton Squire 2",
   "Hutton Squire 3",
@@ -17,8 +18,21 @@ interface DepotContextType {
 
 const DepotContext = createContext<DepotContextType | undefined>(undefined);
 
+const STORAGE_KEY = "adagin_selected_depot";
+
 export function DepotProvider({ children }: { children: ReactNode }) {
-  const [depot, setDepot] = useState(DEPOTS[0]);
+  const stored = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+  const initial = stored ?? DEPOTS[0];
+  const [depot, setDepotRaw] = useState<string>(initial);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, depot); } catch {}
+  }, [depot]);
+
+  const setDepot = (d: string) => {
+    setDepotRaw(d);
+  };
+
   return (
     <DepotContext.Provider value={{ depot, setDepot, DEPOTS }}>
       {children}
@@ -28,6 +42,6 @@ export function DepotProvider({ children }: { children: ReactNode }) {
 
 export function useDepot() {
   const ctx = useContext(DepotContext);
-  if (!ctx) throw new Error("useDepot must be inside DepotProvider");
+  if (!ctx) throw new Error("useDepot must be used inside DepotProvider");
   return ctx;
 }
