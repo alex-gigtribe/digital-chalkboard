@@ -1,47 +1,30 @@
-// src/context/DepotContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+// src/components/context/DepotContext.tsx
+import React, { createContext, useContext, useState } from "react";
 
-export const DEPOTS = [
-  "Hutton Squire 1",
-  "Hutton Squire 2",
-  "Hutton Squire 3",
-  "Hutton Squire 4",
-  "Hutton Squire 5",
-  "Hutton Squire 6",
-];
-
-interface DepotContextType {
+type DepotContextType = {
   depot: string;
-  setDepot: (d: string) => void;
-  DEPOTS: string[];
-}
+  setDepot: (depot: string) => void;
+};
+
+// ✅ Example list of depots — replace with API fetch later
+export const DEPOTS = ["Depot A", "Depot B", "Depot C"];
 
 const DepotContext = createContext<DepotContextType | undefined>(undefined);
 
-const STORAGE_KEY = "adagin_selected_depot";
-
-export function DepotProvider({ children }: { children: ReactNode }) {
-  const stored = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-  const initial = stored ?? DEPOTS[0];
-  const [depot, setDepotRaw] = useState<string>(initial);
-
-  useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, depot); } catch {}
-  }, [depot]);
-
-  const setDepot = (d: string) => {
-    setDepotRaw(d);
-  };
+export const DepotProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [depot, setDepot] = useState<string>(DEPOTS[0]); // Default to first depot
 
   return (
-    <DepotContext.Provider value={{ depot, setDepot, DEPOTS }}>
+    <DepotContext.Provider value={{ depot, setDepot }}>
       {children}
     </DepotContext.Provider>
   );
-}
+};
 
-export function useDepot() {
-  const ctx = useContext(DepotContext);
-  if (!ctx) throw new Error("useDepot must be used inside DepotProvider");
-  return ctx;
-}
+export const useDepot = () => {
+  const context = useContext(DepotContext);
+  if (!context) {
+    throw new Error("useDepot must be used inside DepotProvider");
+  }
+  return context;
+};
