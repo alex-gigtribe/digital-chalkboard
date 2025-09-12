@@ -1,14 +1,24 @@
-import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useDepot } from "../context/DepotContext";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function DepotSelectorModal() {
-  const { user, setDepot } = useAuth();
-  const [selectedDepot, setSelectedDepotLocal] = useState("");
+  const { depots, selectedDepot, setSelectedDepot, reloadDepots } = useDepot();
+  const [localSelection, setLocalSelection] = useState<string>("");
+  const navigate = useNavigate();
 
-  if (!user || user.depot !== null) return null; // only show if depot not selected
+  useEffect(() => {
+    reloadDepots();
+  }, []);
+
+  if (selectedDepot) return null; // ✅ hide if already selected
 
   const handleSelect = () => {
-    if (selectedDepot) setDepot(selectedDepot);
+    const depot = depots.find((d) => d.id.toString() === localSelection);
+    if (depot) {
+      setSelectedDepot(depot);
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -19,21 +29,21 @@ export default function DepotSelectorModal() {
         </h2>
 
         <select
-          value={selectedDepot}
-          onChange={(e) => setSelectedDepotLocal(e.target.value)}
+          value={localSelection}
+          onChange={(e) => setLocalSelection(e.target.value)}
           className="w-full border p-2 rounded mb-4"
         >
           <option value="">Choose a depot</option>
-          {user.depots.map((d) => (
-            <option key={d} value={d}>
-              {d}
+          {depots.map((d) => (
+            <option key={d.id} value={d.id}>
+              {d.name} ({d.zoneName})
             </option>
           ))}
         </select>
 
         <button
           onClick={handleSelect}
-          disabled={!selectedDepot}
+          disabled={!localSelection}
           className="bg-green-600 text-white w-full py-2 rounded-xl hover:bg-green-700 disabled:opacity-50"
         >
           Continue

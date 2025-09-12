@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { loginUser, type LoginResponse } from "../../api/auth";
+import { loginUser } from "../../api/auth";
 
 export default function LoginModal() {
   const { login } = useAuth();
@@ -15,22 +15,17 @@ export default function LoginModal() {
     setError("");
 
     try {
-      const data: LoginResponse = await loginUser(username, password);
+      const data = await loginUser(username, password);
 
-      // ✅ no `ok` check needed — if axios fails, it throws automatically
+      // ✅ store only user + token in AuthContext
       login(
-        {
-          username,
-          securityGroupId: data.securityGroupId,
-          depots: data.depots,
-          depot: null,
-        },
+        { username, securityGroupId: data.securityGroupId },
         data.token
       );
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login error:", err);
-      setError("Login failed. Please check your credentials.");
+      setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -47,8 +42,8 @@ export default function LoginModal() {
         {error && <p className="text-red-600 text-sm text-center">{error}</p>}
 
         <input
-          type="text"
-          placeholder="Username"
+          type="email"
+          placeholder="Email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full border p-2 rounded mb-3"

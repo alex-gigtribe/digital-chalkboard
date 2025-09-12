@@ -1,43 +1,81 @@
 // frontend/src/api/auth.ts
-import axios from "axios";
+// Mock + placeholder for real login endpoint.
+//
+// Usage:
+//   const res = await loginUser(email, password);
+//   // res: { token, securityGroupId, depots }
+
+export type Depot = {
+  id: number;
+  name: string;
+  zoneName: string;
+};
 
 export type LoginResponse = {
   token: string;
   securityGroupId: string;
-  depots: string[];
+  depots: Depot[];
+  username?: string;
 };
 
+const MOCK_DEPOTS: Depot[] = [
+  { id: 1, name: "Hutton Squire 1", zoneName: "Zone A" },
+  { id: 2, name: "Hutton Squire 2", zoneName: "Zone A" },
+  { id: 3, name: "Hutton Squire 3", zoneName: "Zone B" },
+  { id: 4, name: "Hutton Squire 4", zoneName: "Zone B" },
+  { id: 5, name: "Hutton Squire 5", zoneName: "Zone C" },
+  { id: 6, name: "Hutton Squire 6", zoneName: "Zone C" },
+];
+
+function sleep(ms = 300) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+/**
+ * loginUser
+ * - Mocked for now.
+ * - To enable production: uncomment the axios block and replace endpoint URL.
+ */
 export async function loginUser(username: string, password: string): Promise<LoginResponse> {
-  // Step 1: Get the login page to retrieve __RequestVerificationToken
-  const loginPage = await axios.get("/Account/Login", { withCredentials: true });
-  const tokenMatch = loginPage.data.match(/name="__RequestVerificationToken" type="hidden" value="([^"]+)"/);
-  
-  if (!tokenMatch) {
-    throw new Error("Could not find __RequestVerificationToken on login page");
+  // tiny network delay to make UI transitions visible
+  await sleep(300);
+
+  // Basic validation (mock)
+  const allowed = [
+    "digi@email.com",
+    "jd@email.com",
+    "admin@email.com",
+    "justin@email.com",
+  ];
+
+  // Accept only the allowed usernames and the Admin123 password for demo
+  const validUser = allowed.includes(username.toLowerCase());
+  const validPass = password === "Admin123";
+
+  if (!validUser || !validPass) {
+    // Simulate network auth error
+    throw new Error("Invalid username or password (demo credentials).");
   }
 
-  const token = tokenMatch[1];
+  // Build response
+  const securityGroupId = username.toLowerCase().includes("admin") ? "ADMIN" : "DIGI";
+  const token = "mock-token-123"; // demo token; replace with real JWT once prod available
 
-  // Step 2: Send login POST as form data
-  const params = new URLSearchParams();
-  params.append("__RequestVerificationToken", token);
-  params.append("Email", username);
-  params.append("Password", password);
-
-  const response = await axios.post("/Account/Login", params, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    withCredentials: true, // send cookies for session
-  });
-
-  if (response.status !== 200) {
-    throw new Error("Login failed");
-  }
-
+  // For the demo, return the full depot list (no duplicates)
   return {
-    token: "cookie-session", // we don't actually get JWT here, but we track that we're logged in
-    securityGroupId: "N/A",
-    depots: [],
+    token,
+    securityGroupId,
+    depots: MOCK_DEPOTS,
+    username,
   };
+
+  // ---------------------------
+  // Production example (uncomment & adapt)
+  // ---------------------------
+  /*
+  import axios from "axios";
+  const response = await axios.post("https://portal.adagintech.com/api/account/login", { username, password }, { withCredentials: true });
+  // expect response.data = { token, securityGroupId, depots: [...] }
+  return response.data as LoginResponse;
+  */
 }

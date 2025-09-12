@@ -1,10 +1,10 @@
+// frontend/src/components/context/AuthContext.tsx
 import { createContext, useContext, useState, useEffect } from "react";
+import { setAuthToken } from "@/api/axiosClient";
 
 type User = {
   username: string;
   securityGroupId: string;
-  depots: string[];
-  depot: string | null;
 };
 
 type AuthContextType = {
@@ -12,7 +12,6 @@ type AuthContextType = {
   token: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
-  setDepot: (depot: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,32 +20,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  // ✅ Restore depot from localStorage on refresh
+  // ✅ Restore from localStorage on mount
   useEffect(() => {
-    const savedDepot = localStorage.getItem("lockedDepot");
-    if (savedDepot && user) {
-      setUser((prev) => (prev ? { ...prev, depot: savedDepot } : prev));
+    const savedUser = localStorage.getItem("authUser");
+    const savedToken = localStorage.getItem("authToken");
+    if (savedUser && savedToken) {
+      const parsedUser = JSON.parse(savedUser) as User;
+      setUser(parsedUser);
+      setToken(savedToken);
+      setAuthToken(savedToken);
     }
   }, []);
 
   const login = (newUser: User, authToken: string) => {
     setUser(newUser);
     setToken(authToken);
+    localStorage.setItem("authUser", JSON.stringify(newUser));
+    localStorage.setItem("authToken", authToken); // ✅ persist token
+    setAuthToken(authToken);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
+    localStorage.removeItem("authUser");
+    localStorage.removeItem("authToken"); // ✅ clear token
+    setAuthToken(null);
     localStorage.removeItem("lockedDepot");
-  };
-
-  const setDepot = (depot: string) => {
-    setUser((prev) => (prev ? { ...prev, depot } : prev));
-    localStorage.setItem("lockedDepot", depot);
+    window.dispatchEvent(new Event("depotCleared"));
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, setDepot }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -54,8 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };

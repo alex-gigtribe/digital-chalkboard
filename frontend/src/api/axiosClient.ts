@@ -1,3 +1,4 @@
+// frontend/src/api/axiosClient.ts
 import axios from "axios";
 
 const axiosClient = axios.create({
@@ -5,10 +6,22 @@ const axiosClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-let authToken: string | null = null;
+let authToken: string | null =
+  typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
+
+if (authToken) {
+  axiosClient.defaults.headers.common.Authorization = `Bearer ${authToken}`;
+}
 
 export function setAuthToken(token: string | null) {
   authToken = token;
+  if (token) {
+    localStorage.setItem("authToken", token);
+    axiosClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+  } else {
+    localStorage.removeItem("authToken");
+    delete axiosClient.defaults.headers.common.Authorization;
+  }
 }
 
 axiosClient.interceptors.request.use((config) => {
