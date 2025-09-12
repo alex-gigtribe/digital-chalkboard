@@ -1,9 +1,8 @@
-// frontend/src/components/stats-panel/KPITable.tsx
 import { useEffect, useState } from "react";
 import { fetchTeams, type Team } from "@/api/teams";
 import { useDepot } from "../context/DepotContext";
 
-export function KPITable() {
+export default function KPITable() {
   const { selectedDepot } = useDepot();
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,14 +28,12 @@ export function KPITable() {
 
     // ✅ Poll every 30 seconds
     const interval = setInterval(loadTeams, 30_000);
-
     return () => {
       isMounted = false;
       clearInterval(interval);
     };
   }, [selectedDepot]);
 
-  // Compute totals even if empty (shell rows still render)
   const totals = teams.reduce(
     (acc, t) => {
       acc.bins += t.bins;
@@ -54,7 +51,7 @@ export function KPITable() {
   });
 
   return (
-    <div className="bg-white rounded-md shadow-subtle overflow-hidden">
+    <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
       <div className="px-4 py-3 border-b text-sm font-semibold text-navy">
         Team Performance
       </div>
@@ -122,7 +119,9 @@ export function KPITable() {
               <td className="px-4 py-2 text-right">{totals.bins}</td>
               <td className="px-4 py-2 text-right">{totals.pickers}</td>
               <td className="px-4 py-2 text-right">
-                {totals.pickers ? (totals.bins / totals.pickers).toFixed(1) : "--"}
+                {totals.pickers
+                  ? (totals.bins / totals.pickers).toFixed(1)
+                  : "--"}
               </td>
               <td className="px-4 py-2 text-right">{totals.target}</td>
               <td className="px-4 py-2 text-right">—</td>
@@ -133,5 +132,3 @@ export function KPITable() {
     </div>
   );
 }
-
-export default KPITable;

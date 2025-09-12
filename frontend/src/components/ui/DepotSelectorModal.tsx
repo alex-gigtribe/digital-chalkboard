@@ -8,25 +8,23 @@ export default function DepotSelectorModal() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    reloadDepots();
+    reloadDepots(); // ✅ now exists
   }, []);
 
-  if (selectedDepot) return null; // ✅ hide if already selected
+  if (selectedDepot) return null; // hide if already selected
 
   const handleSelect = () => {
     const depot = depots.find((d) => d.id.toString() === localSelection);
     if (depot) {
       setSelectedDepot(depot);
-      navigate("/dashboard");
+      navigate("/"); // redirect after selection
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Select Your Depot
-        </h2>
+        <h2 className="text-xl font-bold mb-4 text-center">Select Your Depot</h2>
 
         <select
           value={localSelection}
@@ -36,7 +34,7 @@ export default function DepotSelectorModal() {
           <option value="">Choose a depot</option>
           {depots.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.name} ({d.zoneName})
+              {d.name}
             </option>
           ))}
         </select>

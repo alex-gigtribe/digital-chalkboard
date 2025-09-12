@@ -159,6 +159,7 @@ export function Header() {
             lastSync={lastSync}
             isRefreshing={isRefreshing}
             onRefresh={onRefresh}
+            depotLocked={isDepotLocked} //  passes lock state
           />
         </div>
       </div>

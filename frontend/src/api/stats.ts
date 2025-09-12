@@ -1,7 +1,5 @@
-// frontend/src/api/stats.ts
-// import axiosClient from "./axiosClient";
-
-export type Stats = {
+// src/api/stats.ts
+export type KPIStats = {
   today: {
     bins: number;
     pickers: number;
@@ -16,105 +14,61 @@ export type Stats = {
   };
 };
 
-// ✅ Add KPIStats type
-export type KPIStats = {
-  bins: { value: string; label: string; delta: string; color: string };
-  pickers: { value: string; label: string; delta: string; color: string };
-  progress: { value: string; label: string; delta: string; color: string };
-  qcFlags: { value: string; label: string; delta: string; color: string };
-};
+// ✅ Generate mock stats consistent with KPIStats type
+function generateMockStats(): KPIStats {
+  const pickersToday = 40;
+  const targetToday = pickersToday * 24;
+  const binsToday = Math.floor(targetToday * (0.9 + Math.random() * 0.2)); // 90–110%
+  const qcFlagsToday = Math.floor(Math.random() * 5);
 
-function cacheKey(depot: string | number) {
-  const date = new Date().toISOString().split("T")[0];
-  return `stats_${depot}_${date}`;
-}
-
-function generateMockStats(): Stats {
-  const todayBins = Math.floor(Math.random() * 250) + 200;
-  const pickers = Math.floor(Math.random() * 10) + 5;
-  const target = 250;
-  const qcFlags = Math.floor(Math.random() * 6);
-
-  const yesterdayBins = Math.floor(todayBins * (0.9 + Math.random() * 0.2));
-  const yesterdayPickers = Math.max(1, pickers + (Math.random() > 0.5 ? 1 : -1));
-  const yesterdayQC = Math.floor(Math.random() * 6);
+  const pickersYesterday = pickersToday + (Math.random() > 0.5 ? 1 : -1);
+  const binsYesterday = Math.floor(targetToday * (0.85 + Math.random() * 0.15));
+  const qcFlagsYesterday = Math.floor(Math.random() * 6);
 
   return {
-    today: { bins: todayBins, pickers, qcFlags, target },
-    yesterday: { bins: yesterdayBins, pickers: yesterdayPickers, qcFlags: yesterdayQC, target },
-  };
-}
-
-// ✅ Convert Stats → KPIStats for UI
-export function transformToKPI(stats: Stats): KPIStats {
-  const t = stats.today;
-  const y = stats.yesterday;
-
-  const getDelta = (today: number, yesterday: number, percent = false) => {
-    const diff = today - yesterday;
-    if (percent) {
-      const pct = (diff / (yesterday || 1)) * 100;
-      return `${diff >= 0 ? "+" : ""}${pct.toFixed(1)}%`;
-    }
-    return `${diff >= 0 ? "+" : ""}${diff}`;
-  };
-
-  const todayProgress = (t.bins / (t.target || 1)) * 100;
-  const yesterdayProgress = (y.bins / (y.target || 1)) * 100;
-
-  return {
-    bins: {
-      value: `${t.bins} bins`,
-      label: "Total Bins Harvested",
-      delta: getDelta(t.bins, y.bins, true),
-      color: t.bins >= t.target ? "text-success" : "text-danger",
+    today: {
+      bins: binsToday,
+      pickers: pickersToday,
+      qcFlags: qcFlagsToday,
+      target: targetToday,
     },
-    pickers: {
-      value: `${t.pickers}`,
-      label: "Active Pickers",
-      delta: getDelta(t.pickers, y.pickers),
-      color: "text-navy",
-    },
-    progress: {
-      value: `${todayProgress.toFixed(1)}%`,
-      label: "Daily Target Progress",
-      delta: getDelta(todayProgress, yesterdayProgress, true),
-      color: todayProgress >= 100 ? "text-success" : "text-primary",
-    },
-    qcFlags: {
-      value: `${t.qcFlags}`,
-      label: "QC Flags",
-      delta: getDelta(t.qcFlags, y.qcFlags),
-      color: t.qcFlags > y.qcFlags ? "text-danger" : "text-success",
+    yesterday: {
+      bins: binsYesterday,
+      pickers: pickersYesterday,
+      qcFlags: qcFlagsYesterday,
+      target: targetToday,
     },
   };
 }
 
 /**
  * fetchStats
- * Fetches KPI stats for a depot (mock or real).
+ * - Mock for now
+ * - Caches in localStorage per depot
+ * - Fires `online` / `offline` events for Header status
  */
-export async function fetchStats(depot: string | number): Promise<Stats> {
-  const key = cacheKey(depot);
+export async function fetchStats(depotName?: string): Promise<KPIStats> {
+  const key = `stats_${depotName ?? "unknown"}`;
 
   try {
+    // --- REAL API (uncomment when ready) ---
     /*
-    const response = await axiosClient.get(`/depots/${depot}/stats`);
-    const data = response.data as Stats;
+    const response = await axiosClient.get(`/depots/${depotName}/stats`);
+    const data = response.data as KPIStats;
     localStorage.setItem(key, JSON.stringify(data));
     window.dispatchEvent(new Event("online"));
     return data;
     */
 
+    // --- MOCK ---
     const data = generateMockStats();
     localStorage.setItem(key, JSON.stringify(data));
     window.dispatchEvent(new Event("online"));
     return data;
   } catch (err) {
-    console.error("Failed to fetch stats, using cache if available:", err);
+    console.error("Failed to fetch stats, using cache:", err);
     window.dispatchEvent(new Event("offline"));
     const cached = localStorage.getItem(key);
-    if (cached) return JSON.parse(cached) as Stats;
-    return generateMockStats();
+    return cached ? (JSON.parse(cached) as KPIStats) : generateMockStats();
   }
 }
