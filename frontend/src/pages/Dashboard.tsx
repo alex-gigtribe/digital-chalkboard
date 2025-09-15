@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import KPITiles from "../components/stats-panel/KPITiles";
 import KPITable from "../components/stats-panel/KPITable";
 import { useDepot } from "../components/context/DepotContext";
-import { fetchStats } from "@/api/stats";
-import { fetchTeams } from "@/api/teams";
+// import { fetchStats } from "@/api/stats";
+// import { fetchTeams } from "@/api/teams";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
-import type { KPIStats } from "@/api/stats";
+// import type { KPIStats } from "@/api/stats";
 
 export default function Dashboard() {
   const { selectedDepot } = useDepot();
