@@ -22,7 +22,7 @@
  * 4) GET /api/depots/{depotId}/stats
  *    <- Returns: { today: { bins, pickers, qcFlags, target }, yesterday: {...} }
  *
- * 5) (Optional future)
+ * 5) 
  *    - GET /api/depots/{depotId}/bins
  *    - GET /api/depots/{depotId}/employees
  *    - GET /api/depots/{depotId}/qc
