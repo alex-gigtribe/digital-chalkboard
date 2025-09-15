@@ -17,7 +17,7 @@ export default function LoginModal() {
     try {
       const data = await loginUser(username, password);
 
-      // ✅ store only user + token in AuthContext
+      // store only user + token in AuthContext
       login(
         { username, securityGroupId: data.securityGroupId },
         data.token
@@ -32,41 +32,74 @@ export default function LoginModal() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6"
-      >
-        <h2 className="text-2xl font-bold text-center mb-4">Log In</h2>
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-sm mx-auto my-8 min-h-fit">
+        {/* Header with logo */}
+        <div className="text-center pt-8 pb-6">
+          <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/Adagin-logo.png" 
+              alt="Adagin Technologies" 
+              className="h-25 w-auto"
+            />
+          </div>
+        </div>
 
-        {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="px-8 pb-8">
+          {error && (
+            <div className="text-red-600 text-sm text-center mb-4 p-2 bg-red-50 rounded">
+              {error}
+            </div>
+          )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full border p-2 rounded mb-3"
-          required
-        />
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full border p-2 rounded mb-4"
-          required
-        />
+          <div className="mb-6">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              required
+            />
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-600 text-white w-full py-2 rounded-xl hover:bg-blue-700"
-        >
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-slate-600 hover:bg-slate-700 disabled:bg-slate-400 text-white font-medium py-2.5 px-4 rounded-md transition-colors duration-200"
+          >
+            {loading ? "Signing in..." : "Login"}
+          </button>
+
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              className="text-sm text-slate-500 hover:text-slate-700 underline"
+              onClick={() => {/* Handle forgot password */}}
+            >
+              Forgot Password?
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

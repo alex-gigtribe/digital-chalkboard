@@ -21,3 +21,11 @@ sql
 sql/
 
 /package-lock.json
+backend/
+**/backend/
+
+
+**/requestedEndpoints/
+requestedEndpoints/
+
+
