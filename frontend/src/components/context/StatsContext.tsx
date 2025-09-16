@@ -3,6 +3,8 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { fetchDashboard, type DashboardData } from "@/api/dashboard";
 import { useDepot } from "./DepotContext";
 
+const BINS_PER_PERSON_TARGET = 24; // Constant: 24 bins per person
+
 type DayStats = {
   bins: number;
   pickers: number;
@@ -26,6 +28,7 @@ type StatsContextType = {
   loading: boolean;
   error: string | null;
   lastUpdated: string | null;
+  isOnline: boolean;
 };
 
 const StatsContext = createContext<StatsContextType | undefined>(undefined);
@@ -38,6 +41,7 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [isOnline, setIsOnline] = useState(true);
 
   // Generate cache key with depot and date
   const getCacheKey = (date: string) => `dashboard_${selectedDepot?.id}_${date}`;
@@ -80,22 +84,27 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
     };
   };
 
-  // Process dashboard data into stats format
+  // Process dashboard data with proper target calculation
   const processStats = (data: DashboardData): DayStats => {
-    const targetProgress = data.totals.target > 0 
-      ? (data.totals.bins / data.totals.target) * 100 
-      : 0;
+    // Calculate proper targets: each team's pickers * 24 bins per person
+    const teamsWithTargets = data.teams.map(team => ({
+      ...team,
+      target: team.pickers * BINS_PER_PERSON_TARGET
+    }));
+
+    const totalTarget = teamsWithTargets.reduce((sum, team) => sum + team.target, 0);
+    const targetProgress = totalTarget > 0 ? (data.totals.bins / totalTarget) * 100 : 0;
 
     return {
       bins: data.totals.bins,
       pickers: data.totals.pickers,
-      target: data.totals.target,
+      target: totalTarget,
       qcFlags: data.totals.qcFlags,
       targetProgress
     };
   };
 
-  // Load dashboard data
+  // Load dashboard data with error handling
   const loadDashboardData = async () => {
     if (!selectedDepot) return;
 
@@ -106,13 +115,23 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
       const data = await fetchDashboard(selectedDepot.id);
       const stats = processStats(data);
       
-      // Store current day data
+      // Update teams with correct targets
+      const teamsWithTargets = data.teams.map(team => ({
+        ...team,
+        target: team.pickers * BINS_PER_PERSON_TARGET
+      }));
+      
       setCurrentStats(stats);
-      setTeams(data.teams);
+      setTeams(teamsWithTargets);
       setLastUpdated(data.lastUpdated);
+      setIsOnline(true);
+      
+      // Fire online event for header
+      window.dispatchEvent(new Event("online"));
       
       // Cache current data
       localStorage.setItem(getTodayKey(), JSON.stringify(stats));
+      localStorage.setItem(`teams_${selectedDepot.id}`, JSON.stringify(teamsWithTargets));
       
       // Load previous day data from cache
       const previousData = localStorage.getItem(getYesterdayKey());
@@ -121,8 +140,28 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
       }
       
     } catch (err: any) {
-      console.error("Failed to load dashboard data:", err);
-      setError("Failed to load dashboard data");
+      console.error("API failed, loading cached data:", err);
+      setError("API offline - showing cached data");
+      setIsOnline(false);
+      
+      // Fire offline event for header
+      window.dispatchEvent(new Event("offline"));
+      
+      // Load cached data if available
+      const cachedStats = localStorage.getItem(getTodayKey());
+      const cachedTeams = localStorage.getItem(`teams_${selectedDepot.id}`);
+      
+      if (cachedStats) {
+        setCurrentStats(JSON.parse(cachedStats));
+      }
+      if (cachedTeams) {
+        setTeams(JSON.parse(cachedTeams));
+      }
+      
+      const previousData = localStorage.getItem(getYesterdayKey());
+      if (previousData) {
+        setPreviousStats(JSON.parse(previousData));
+      }
     } finally {
       setLoading(false);
     }
@@ -155,7 +194,8 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
       teams,
       loading,
       error,
-      lastUpdated
+      lastUpdated,
+      isOnline
     }}>
       {children}
     </StatsContext.Provider>

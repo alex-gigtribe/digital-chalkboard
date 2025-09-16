@@ -1,7 +1,5 @@
 // frontend/src/api/auth.ts
-// Login API for AdaginTech Portal
-// Backend table reference: [AdaginTech].[AdaginSecurityGroup] (SecurityGroupID)
-// This call should only return a token + SecurityGroupID, no depots/zones here.
+// Login API for AdaginTech Portal - DEV VERSION with hardcoded login
 
 import axiosClient from "./axiosClient";
 import { API_ENDPOINTS } from "../../endpoints/requestedEndpoints";
@@ -16,18 +14,31 @@ export async function loginUser(
   username: string,
   password: string
 ): Promise<LoginResponse> {
-  // Login API call (live endpoint handled in requestedEndpoints.ts) aka API_ENDPOINTS, login 
+  
+  // DEV MODE - Hardcoded login for testing
+  if (import.meta.env.DEV) {
+    // Allow admin/admin for development
+    if (username === "admin" && password === "admin") {
+      const mockResponse: LoginResponse = {
+        token: "mock-jwt-token-12345",
+        securityGroupId: "dev-security-group-id",
+        username: "Admin User"
+      };
+      
+      console.log("[DEBUG] Dev login successful:", mockResponse);
+      return new Promise(resolve => setTimeout(() => resolve(mockResponse), 500));
+    } else {
+      throw new Error("Invalid credentials. Use admin/admin for development.");
+    }
+  }
+
+  // PRODUCTION - Real API call
   const response = await axiosClient.post<LoginResponse>(
     API_ENDPOINTS.login,
     { username, password },
     { withCredentials: true }
   );
 
-  // axiosClient will attach token to all subsequent requests automatically
-   if (import.meta.env.DEV) {
-    console.log("[DEBUG] Login response:", response.data);
-  }
-
+  console.log("[DEBUG] Login response:", response.data);
   return response.data;
 }
-
