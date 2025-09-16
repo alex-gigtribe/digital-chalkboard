@@ -27,11 +27,5 @@ backend/
 **/backend/
 
 # Endpoints folder
-endpoints/
-**/endpoints/
 
-# Requested endpoints (specific files)
-**/requestedEndpoints/
-requestedEndpoints/
-**/requestedEndpoints.ts
-requestedEndpoints.ts
+
