@@ -1,40 +1,10 @@
-import { useEffect, useState } from "react";
-import { fetchTeams, type Team } from "@/api/teams";
-import { useDepot } from "../context/DepotContext";
+// frontend/src/components/stats-panel/KPITable.tsx
+import { useStats } from "../context/StatsContext";
 
 export default function KPITable() {
-  const { selectedDepot } = useDepot();
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { teams, loading } = useStats();
 
-  useEffect(() => {
-    if (!selectedDepot) return;
-
-    let isMounted = true;
-
-    const loadTeams = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchTeams(selectedDepot.id, selectedDepot.name);
-        if (isMounted) setTeams(data);
-      } catch (e) {
-        console.warn("Failed to load teams:", e);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    loadTeams();
-
-    // ✅ Poll every 30 seconds
-    const interval = setInterval(loadTeams, 30_000);
-    return () => {
-      isMounted = false;
-      clearInterval(interval);
-    };
-  }, [selectedDepot]);
-
-  const totals = teams.reduce(
+  const totals = teams?.reduce(
     (acc, t) => {
       acc.bins += t.bins;
       acc.pickers += t.pickers;
@@ -42,7 +12,7 @@ export default function KPITable() {
       return acc;
     },
     { bins: 0, pickers: 0, target: 0 }
-  );
+  ) || { bins: 0, pickers: 0, target: 0 };
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "short",
@@ -70,7 +40,7 @@ export default function KPITable() {
             </tr>
           </thead>
           <tbody>
-            {loading && teams.length === 0
+            {loading && (!teams || teams.length === 0)
               ? Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="animate-pulse even:bg-gray-50">
                     <td className="px-4 py-2 text-gray-300">--</td>
@@ -82,10 +52,12 @@ export default function KPITable() {
                     <td className="px-4 py-2 text-right text-gray-300">--</td>
                   </tr>
                 ))
-              : teams.map((team, idx) => {
+              : teams?.map((team, idx) => {
                   const above = team.bins >= team.target;
+                  const avgPerPicker = team.pickers > 0 ? (team.bins / team.pickers).toFixed(1) : "--";
+                  
                   return (
-                    <tr key={idx} className="even:bg-gray-50">
+                    <tr key={team.id} className="even:bg-gray-50">
                       <td className="px-4 py-2">{today}</td>
                       <td className="px-4 py-2 font-medium text-navy">
                         {team.name}
@@ -93,7 +65,7 @@ export default function KPITable() {
                       <td className="px-4 py-2 text-right">{team.bins}</td>
                       <td className="px-4 py-2 text-right">{team.pickers}</td>
                       <td className="px-4 py-2 text-right">
-                        {team.avg?.toFixed(1)}
+                        {avgPerPicker}
                       </td>
                       <td className="px-4 py-2 text-right font-semibold text-success">
                         {team.target}

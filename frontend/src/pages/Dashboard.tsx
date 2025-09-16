@@ -1,37 +1,17 @@
-import { useState, useEffect } from "react";
+// frontend/src/pages/Dashboard.tsx
 import KPITiles from "../components/stats-panel/KPITiles";
 import KPITable from "../components/stats-panel/KPITable";
+import KPIVariety from "../components/stats-panel/KPIVariety";
+import KPIQCissues from "../components/stats-panel/KPIQCissues";
 import { useDepot } from "../components/context/DepotContext";
-// import { fetchStats } from "@/api/stats";
-// import { fetchTeams } from "@/api/teams";
+import { useStats } from "../components/context/StatsContext";
 import LoadingOverlay from "../components/ui/LoadingOverlay";
-// import type { KPIStats } from "@/api/stats";
 
 export default function Dashboard() {
   const { selectedDepot } = useDepot();
-  const [stats, setStats] = useState<KPIStats | null>(null);
-  const [loading, setLoading] = useState(false); // ⬅ start as false
+  const { loading } = useStats();
 
-  useEffect(() => {
-    if (!selectedDepot) return; // ⬅ do nothing until depot is picked
-    setLoading(true);
-
-    const load = async () => {
-      try {
-        const data = await fetchStats(selectedDepot.name);
-        setStats(data);
-        await fetchTeams(selectedDepot.id, selectedDepot.name); // warm up teams cache
-      } catch (e) {
-        console.warn("Dashboard load failed:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [selectedDepot]);
-
-  //  If no depot selected yet, show a message instead of loading forever
+  // If no depot selected yet, show a message instead of loading forever
   if (!selectedDepot) {
     return (
       <div className="flex items-center justify-center h-[60vh]">
@@ -48,11 +28,19 @@ export default function Dashboard() {
   return (
     <div className="bg-white min-h-screen">
       <div className="layout-container px-12 md:px-18 lg:px-24 py-8 space-y-6">
-        <KPITiles stats={stats} />
+        <KPITiles />
+        
         <h2 className="text-navy text-lg font-semibold">
           Depot Performance — {selectedDepot.name}
         </h2>
+        
         <KPITable />
+        
+        {/* Side-by-side tables for Variety and QC Issues */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <KPIVariety />
+          <KPIQCissues />
+        </div>
       </div>
     </div>
   );
