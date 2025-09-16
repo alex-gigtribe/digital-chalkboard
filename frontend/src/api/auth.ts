@@ -1,5 +1,5 @@
 // frontend/src/api/auth.ts
-// Login API for AdaginTech Portal - DEV VERSION with hardcoded login
+// Login API with admin/admin mock & prod for testing in all environments
 
 import axiosClient from "./axiosClient";
 import { API_ENDPOINTS } from "../../endpoints/requestedEndpoints";
@@ -15,30 +15,31 @@ export async function loginUser(
   password: string
 ): Promise<LoginResponse> {
   
-  // DEV MODE - Hardcoded login for testing
-  if (import.meta.env.DEV) {
-    // Allow admin/admin for development
-    if (username === "admin" && password === "admin") {
-      const mockResponse: LoginResponse = {
-        token: "mock-jwt-token-12345",
-        securityGroupId: "dev-security-group-id",
-        username: "Admin User"
-      };
-      
-      console.log("[DEBUG] Dev login successful:", mockResponse);
-      return new Promise(resolve => setTimeout(() => resolve(mockResponse), 500));
-    } else {
-      throw new Error("Invalid credentials. Use admin/admin for development.");
-    }
+  // Allow admin/admin for testing in ALL environments (dev and production)
+  if (username === "admin" && password === "admin") {
+    const mockResponse: LoginResponse = {
+      token: "mock-jwt-token-12345",
+      securityGroupId: "dev-security-group-id",
+      username: "Admin User (Demo)"
+    };
+    
+    console.log("[DEBUG] Mock login successful:", mockResponse);
+    return new Promise(resolve => setTimeout(() => resolve(mockResponse), 500));
   }
 
-  // PRODUCTION - Real API call
-  const response = await axiosClient.post<LoginResponse>(
-    API_ENDPOINTS.login,
-    { username, password },
-    { withCredentials: true }
-  );
+  // For all other credentials, try real API
+  try {
+    const response = await axiosClient.post<LoginResponse>(
+      API_ENDPOINTS.login,
+      { username, password },
+      { withCredentials: true }
+    );
 
-  console.log("[DEBUG] Login response:", response.data);
-  return response.data;
+    console.log("[DEBUG] Real API login successful:", response.data);
+    return response.data;
+    
+  } catch (error: any) {
+    console.error("[ERROR] Login failed:", error.message);
+    throw new Error("Invalid credentials or API unavailable");
+  }
 }
