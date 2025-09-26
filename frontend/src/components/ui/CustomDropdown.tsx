@@ -7,9 +7,17 @@ interface CustomDropdownProps {
   onChange: (value: string) => void;
   label?: string;
   disabled?: boolean;
+  className?: string;
 }
 
-const CustomDropdown: React.FC<CustomDropdownProps> = ({ options, value, onChange, label, disabled = false }) => {
+const CustomDropdown: React.FC<CustomDropdownProps> = ({ 
+  options, 
+  value, 
+  onChange, 
+  label, 
+  disabled = false,
+  className = ""
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -33,7 +41,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({ options, value, onChang
         onClick={() => !disabled && setIsOpen((s) => !s)}
         disabled={disabled}
         className={`bg-white text-navy px-4 py-2 rounded-md border border-navy/20 shadow-sm text-sm font-medium flex items-center justify-between min-w-[160px]
-          hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
       >
         <span>{value || label}</span>
         <svg className={`w-4 h-4 ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor">

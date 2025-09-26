@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npx vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
+    "preview": "vite preview",
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "date-fns": "^3.2.0",

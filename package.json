@@ -9,17 +9,19 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
     "build": "npm run build --workspace=frontend",
     "install:all": "npm install",
-    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules"
+    "clean": "rm -rf node_modules frontend/node_modules backend/node_modules",
+    "print-structure": "ts-node --esm frontend/scripts/printStructure.ts"
   },
   "devDependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "concurrently": "^8.2.2",
     "shadcn-ui": "^0.9.5",
     "stylelint-config-standard": "^39.0.0",
     "stylelint-config-tailwindcss": "^1.0.0",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -28,7 +30,10 @@
   "dependencies": {
     "@nivo/line": "^0.99.0",
     "autoprefixer": "^10.4.21",
+    "axios": "^1.11.0",
+    "lucide-react": "^0.544.0",
     "postcss": "^8.5.6",
+    "react-router-dom": "^7.8.2",
     "tailwindcss": "^4.1.13"
   }
 }

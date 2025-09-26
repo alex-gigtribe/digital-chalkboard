@@ -1,47 +1,56 @@
-// src/context/DepotContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import { Depot, fetchDepots } from "@/api/depots";
 
-export const DEPOTS = [
-  "Hutton Squire 1",
-  "Hutton Squire 2",
-  "Hutton Squire 3",
-  "Hutton Squire 4",
-  "Hutton Squire 5",
-  "Hutton Squire 6",
-];
-
-interface DepotContextType {
-  depot: string;
-  setDepot: (d: string) => void;
-  DEPOTS: string[];
-}
+type DepotContextType = {
+  depots: Depot[];
+  selectedDepot: Depot | null;
+  setSelectedDepot: (depot: Depot) => void;
+  reloadDepots: () => Promise<void>; // ✅ include this
+};
 
 const DepotContext = createContext<DepotContextType | undefined>(undefined);
 
-const STORAGE_KEY = "adagin_selected_depot";
+export function DepotProvider({ children }: { children: React.ReactNode }) {
+  const [depots, setDepots] = useState<Depot[]>([]);
+  const [selectedDepot, setSelectedDepotState] = useState<Depot | null>(null);
 
-export function DepotProvider({ children }: { children: ReactNode }) {
-  const stored = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-  const initial = stored ?? DEPOTS[0];
-  const [depot, setDepotRaw] = useState<string>(initial);
+  const reloadDepots = async () => {
+    try {
+      const data = await fetchDepots();
+      setDepots(data);
+    } catch (e) {
+      console.error("Failed to load depots:", e);
+      setDepots([]); // fallback to empty list
+    }
+  };
 
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, depot); } catch {}
-  }, [depot]);
+    reloadDepots();
 
-  const setDepot = (d: string) => {
-    setDepotRaw(d);
+    const savedDepot = localStorage.getItem("lockedDepot");
+    if (savedDepot) {
+      try {
+        setSelectedDepotState(JSON.parse(savedDepot));
+      } catch {
+        localStorage.removeItem("lockedDepot");
+      }
+    }
+  }, []);
+
+  const setSelectedDepot = (depot: Depot) => {
+    setSelectedDepotState(depot);
+    localStorage.setItem("lockedDepot", JSON.stringify(depot));
   };
 
   return (
-    <DepotContext.Provider value={{ depot, setDepot, DEPOTS }}>
+    <DepotContext.Provider value={{ depots, selectedDepot, setSelectedDepot, reloadDepots }}>
       {children}
     </DepotContext.Provider>
   );
 }
 
-export function useDepot() {
+export const useDepot = () => {
   const ctx = useContext(DepotContext);
-  if (!ctx) throw new Error("useDepot must be used inside DepotProvider");
+  if (!ctx) throw new Error("useDepot must be used within a DepotProvider");
   return ctx;
-}
+};

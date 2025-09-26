@@ -9,7 +9,7 @@ interface LayoutProps {
 /**
  * Page shell using Adagin theme colors (light background, navy header/footer).
  */
-export function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />

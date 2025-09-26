@@ -67,6 +67,6 @@ const completeStructure = {
 const jsonFilePath = path.join(__dirname, 'binTrackingStructure.json');
 fs.writeFileSync(jsonFilePath, JSON.stringify(completeStructure, null, 2), 'utf-8');
 
-// cd C:\Users\Gjpro\Desktop\bin-tracking-widget\backend
+// D:\Gert Files\My Career\AdaginTech\Current\10 Digital chalkboard\digital-chalkboard\backend>
 // npx tsx utils/printTree.ts
 

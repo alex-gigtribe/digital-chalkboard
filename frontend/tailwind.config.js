@@ -10,7 +10,7 @@ export default {
     extend: {
       // Colors from Adagin Theme Pack
       colors: {
-        background: "#DAE8C8",        // Neutral grey/white – cards, panels
+        background: "#f4f8f0ff",        // Neutral grey/white – cards, panels changed form the avo color and added more width to kpi tiles and table div
         primary: "#5a7784",           // Adagin Light Blue – buttons, primary elements
         success: "#a4cc4c",           // KPI accent green
         navy: "#284350",              // Text, headers, icons

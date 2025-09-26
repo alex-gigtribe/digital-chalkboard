@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: adagin-bin-tracking
+    name: AdaginDigitalDepot
     runtime: static
     # The build command is the crucial part for a monorepo.
     # It first installs all dependencies from the root package.json
