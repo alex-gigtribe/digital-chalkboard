@@ -1,8 +1,12 @@
 // src/layout/Footer.tsx
 
 import { Globe, Mail } from "lucide-react";
+import { useDepot } from "../components/context/DepotContext";
 
 export function Footer() {
+  const { selectedDepot } = useDepot();
+  const farmName = selectedDepot?.farmName || "";
+  
   return (
     <footer className="bg-navy text-white text-sm mt-12">
       <div className="max-w-container mx-auto px-4 md:px-6 py-3">
@@ -23,10 +27,10 @@ export function Footer() {
           </div>
 
           <div /> {/* spacer */}
-
+    
           <div className="flex flex-col items-start md:items-end justify-center gap-1">
             <p className="font-semibold">© 2025 AdaginTech. All rights reserved.</p>
-            <p className="text-white/75">Digital Chalkboard · Hutton Squire · v1.0.0</p>
+            <p className="text-white/75">Digital Chalkboard · {farmName} · v1.0.0</p>
           </div>
         </div>
       </div>

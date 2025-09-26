@@ -173,8 +173,8 @@ export function StatsProvider({ children }: { children: React.ReactNode }) {
 
     loadDashboardData();
 
-    // Poll every 30 seconds
-    const interval = setInterval(loadDashboardData, 30_000);
+    // Poll every 5 minutes
+    const interval = setInterval(loadDashboardData, 50_0000);
     
     return () => clearInterval(interval);
   }, [selectedDepot]);

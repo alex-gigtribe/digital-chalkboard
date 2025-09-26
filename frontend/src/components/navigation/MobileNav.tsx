@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Menu, X, RefreshCw, Wifi, Clock, Lock, LogOut, AlertCircle } from "lucide-react";
 import CustomDropdown from "../ui/CustomDropdown";
 import { useAuth } from "../context/AuthContext";
+import { useDepot } from "../context/DepotContext";
 
 interface Props {
   depot: string;
@@ -28,20 +29,14 @@ export function MobileNav({
   const [open, setOpen] = useState(false);
   const [now, setNow] = useState(new Date());
   const { user, logout } = useAuth();
+  const { depots, selectedDepot } = useDepot();
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
-  const DEPOTS = [
-    "Hutton Squire 1",
-    "Hutton Squire 2",
-    "Hutton Squire 3",
-    "Hutton Squire 4",
-    "Hutton Squire 5",
-    "Hutton Squire 6",
-  ];
+  const farmName = selectedDepot ? selectedDepot.farmName : "";
 
   return (
     <>
@@ -61,11 +56,18 @@ export function MobileNav({
         <div className={`p-4 border-b flex items-center justify-between ${
           !isOnline ? 'bg-red-50 border-red-200' : ''
         }`}>
-          <h2 className="font-semibold text-sm flex items-center gap-1">
-            Bin Tracking — <span className="font-bold">{depot || "No Depot Selected"}</span>
-            {depotLocked && <Lock className="inline w-4 h-4 ml-1 text-yellow-500" />}
-            {error && <AlertCircle className="w-4 h-4 text-orange-500" />}
-          </h2>
+          <div>
+            {farmName && (
+              <div className="text-xs text-gray-600 mb-1">
+                {farmName}
+              </div>
+            )}
+            <h2 className="font-semibold text-xs flex items-center gap-1">
+              Bin Tracking — <span className="font-bold">{depot || "No Depot Selected"}</span>
+              {depotLocked && <Lock className="inline w-3 h-3 ml-1 text-yellow-500" />}
+              {error && <AlertCircle className="w-3 h-3 text-orange-500" />}
+            </h2>
+          </div>
           <button onClick={() => setOpen(false)} className="p-2 rounded-md hover:bg-gray-100">
             <X className="w-5 h-5" />
           </button>
@@ -85,15 +87,17 @@ export function MobileNav({
           )}
 
           {/* Depot selector (disabled if locked) */}
-          <CustomDropdown
-            options={DEPOTS}
-            value={depot}
-            onChange={(d: string) => {
-              setDepot(d);
-              setOpen(false);
-            }}
-            disabled={depotLocked}
-          />
+          <div className={depotLocked ? "opacity-50 pointer-events-none" : ""}>
+            <CustomDropdown
+              options={depots.map((d) => d.name)}
+              value={depot}
+              onChange={(d: string) => {
+                setDepot(d);
+                setOpen(false);
+              }}
+              disabled={depotLocked}
+            />
+          </div>
 
           {/* Online/Offline + Sync */}
           <div className="flex items-center justify-between">
@@ -169,7 +173,7 @@ export function MobileNav({
 
         {/* Footer */}
         <div className="p-3 border-t text-center text-xs opacity-70">
-          © 2025 AdaginTech · Hutton Squire
+          © 2025 AdaginTech · {farmName ? farmName.split(' ').slice(0, 2).join(' ') : 'Hutton Squire'}
         </div>
       </aside>
 

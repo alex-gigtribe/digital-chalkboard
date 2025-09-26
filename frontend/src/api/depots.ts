@@ -19,12 +19,12 @@ export async function fetchDepots(): Promise<Depot[]> {
   if (authToken === "mock-jwt-token-12345") {
     // Return mock depots for admin user
     const mockDepots: Depot[] = [
-      { id: "depot-1-id", farmId: "farm-1-id", farmName: "Hutton Squire Farm 1", name: "Hutton Squire 1", isActive: true },
-      { id: "depot-2-id", farmId: "farm-2-id", farmName: "Hutton Squire Farm 2", name: "Hutton Squire 2", isActive: true },
-      { id: "depot-3-id", farmId: "farm-3-id", farmName: "Hutton Squire Farm 3", name: "Hutton Squire 3", isActive: true },
-      { id: "depot-4-id", farmId: "farm-4-id", farmName: "Hutton Squire Farm 4", name: "Hutton Squire 4", isActive: true },
-      { id: "depot-5-id", farmId: "farm-5-id", farmName: "Hutton Squire Farm 5", name: "Hutton Squire 5", isActive: true },
-      { id: "depot-6-id", farmId: "farm-6-id", farmName: "Hutton Squire Farm 6", name: "Hutton Squire 6", isActive: true }
+      { id: "depot-1-id", farmId: "farm-1-id", farmName: "Hutton Squire Farm 1", name: "Depot 1", isActive: true },
+      { id: "depot-2-id", farmId: "farm-2-id", farmName: "Hutton Squire Farm 2", name: "Depot 2", isActive: true },
+      { id: "depot-3-id", farmId: "farm-3-id", farmName: "Hutton Squire Farm 3", name: "Depot 3", isActive: true },
+      { id: "depot-4-id", farmId: "farm-4-id", farmName: "Hutton Squire Farm 4", name: "Depot 4", isActive: true },
+      { id: "depot-5-id", farmId: "farm-5-id", farmName: "Hutton Squire Farm 5", name: "Depot 5", isActive: true },
+      { id: "depot-6-id", farmId: "farm-6-id", farmName: "Hutton Squire Farm 6", name: "Depot 6", isActive: true }
     ];
     return new Promise(resolve => setTimeout(() => resolve(mockDepots), 300));
   }

@@ -13,6 +13,7 @@ export function Header() {
   const { isOnline, error, lastUpdated } = useStats();
 
   const depotName = selectedDepot ? selectedDepot.name : "";
+  const farmName = selectedDepot ? selectedDepot.farmName : "";
   const [isRefreshing, setIsRefreshing] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -55,26 +56,33 @@ export function Header() {
         <div className="flex items-center gap-3 min-w-0">
           <img src="/Adagin-logo.svg" alt="AdaginTech" className="h-11 w-auto md:h-20" />
           <div className="truncate leading-tight">
-            <h1 className="hidden md:block font-semibold text-base md:text-lg truncate flex items-center gap-2">
-              Bin Tracking Team Summary —{" "}
-              <span className="font-bold flex items-center gap-1">
-                {depotName || "No Depot Selected"}
-                {isDepotLocked && <Lock className="w-4 h-4 text-yellow-300" />}
-              </span>
-              {error && (
-                <span className="flex items-center gap-1 text-orange-300 text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  Cached Data
+            <div className="hidden md:block">
+              {farmName && (
+                <div className="font-medium text-sm text-white/90 mb-1">
+                  {farmName}
+                </div>
+              )}
+              <h1 className="font-semibold text-base md:text-lg truncate flex items-center gap-2">
+                Bin Tracking Team Summary —{" "}
+                <span className="font-bold flex items-center gap-1">
+                  {depotName || "No Depot Selected"}
+                  {isDepotLocked && <Lock className="w-4 h-4 text-yellow-300" />}
+                </span>
+                {error && (
+                  <span className="flex items-center gap-1 text-orange-300 text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    Cached Data
+                  </span>
+                )}
+              </h1>
+            </div>
+            <div className="md:hidden flex flex-col">
+              {farmName && (
+                <span className="font-medium text-xs text-white/90 leading-tight">
+                  {farmName}
                 </span>
               )}
-            </h1>
-            <div className="md:hidden flex flex-col">
               <span className="font-semibold text-sm leading-tight">Bin Tracking</span>
-              <span className="font-bold text-sm leading-tight flex items-center gap-1">
-                {depotName || "No Depot Selected"}
-                {isDepotLocked && <Lock className="w-3 h-3 text-yellow-300" />}
-                {error && <AlertCircle className="w-3 h-3 text-orange-300" />}
-              </span>
             </div>
           </div>
         </div>

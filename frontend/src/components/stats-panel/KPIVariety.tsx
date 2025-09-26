@@ -27,8 +27,8 @@ export default function KPIVariety() {
 
     loadVarieties();
 
-    // Poll every 60 seconds (less frequent than main dashboard)
-    const interval = setInterval(loadVarieties, 60_000);
+    // Poll every 5 minutes (less frequent than main dashboard)
+    const interval = setInterval(loadVarieties, 50_0000);
     return () => {
       isMounted = false;
       clearInterval(interval);

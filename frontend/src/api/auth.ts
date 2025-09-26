@@ -10,6 +10,8 @@ export type LoginResponse = {
   username?: string;        // Optional display name
 };
 
+// const BINS_PER_PERSON_TARGET = 24; // Constant: 24 bins per person
+
 export async function loginUser(
   username: string,
   password: string

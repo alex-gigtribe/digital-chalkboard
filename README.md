@@ -22,7 +22,7 @@ React SPA for live bin tracking and team performance monitoring across 6 farm de
 
 ## Features
 
-- Live dashboard with 30-second polling
+- Live dashboard with 5 minutes polling
 - Team performance tracking (24 bins per picker target)  
 - Day-over-day comparisons with localStorage caching
 - Offline mode with cached data fallback
