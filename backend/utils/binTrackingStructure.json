@@ -46,7 +46,9 @@
         "charts": {},
         "context": {
           "AuthContext.tsx": "file",
-          "DepotContext.tsx": "file"
+          "DepotContext.tsx": "file",
+          "StatsContext.tsx": "file",
+          "TilesContext.tsx": "file"
         },
         "navigation": {
           "MainNav.tsx": "file",
@@ -54,8 +56,10 @@
         },
         "panel": {},
         "stats-panel": {
+          "KPIQCissues.tsx": "file",
           "KPITable.tsx": "file",
-          "KPITiles.tsx": "file"
+          "KPITiles.tsx": "file",
+          "KPIVariety.tsx": "file"
         },
         "ui": {
           "CustomDropdown.tsx": "file",
