@@ -1,0 +1,94 @@
+{
+  "backend": {
+    "nodemon.json": "file",
+    "package.json": "file",
+    "src": {
+      "index.ts": "file"
+    },
+    "tsconfig.json": "file",
+    "utils": {
+      "binTrackingStructure.json": "file",
+      "printTree.ts": "file"
+    }
+  },
+  "frontend": {
+    ".env": "file",
+    "endpoints": {
+      "requestedEndpoints.ts": "file"
+    },
+    "index.html": "file",
+    "manifest.json": "file",
+    "package.json": "file",
+    "postcss.config.js": "file",
+    "public": {
+      "Adagin-logo.png": "file",
+      "Adagin-logo.svg": "file",
+      "apple-touch-icon.png": "file",
+      "favicon-96x96.png": "file",
+      "favicon.ico": "file",
+      "favicon.png": "file",
+      "favicon.svg": "file",
+      "site.webmanifest": "file",
+      "web-app-manifest-192x192.png": "file",
+      "web-app-manifest-512x512.png": "file"
+    },
+    "src": {
+      "api": {
+        "auth.ts": "file",
+        "axiosClient.ts": "file",
+        "dashboard.ts": "file",
+        "depots.ts": "file",
+        "qc-details.ts": "file",
+        "varieties.ts": "file"
+      },
+      "App.tsx": "file",
+      "components": {
+        "charts": {},
+        "context": {
+          "AuthContext.tsx": "file",
+          "DepotContext.tsx": "file",
+          "StatsContext.tsx": "file",
+          "TilesContext.tsx": "file"
+        },
+        "navigation": {
+          "MainNav.tsx": "file",
+          "MobileNav.tsx": "file"
+        },
+        "panel": {},
+        "stats-panel": {
+          "KPIQCissues.tsx": "file",
+          "KPITable.tsx": "file",
+          "KPITiles.tsx": "file",
+          "KPIVariety.tsx": "file"
+        },
+        "ui": {
+          "CustomDropdown.tsx": "file",
+          "DepotSelectorModal.tsx": "file",
+          "LoadingOverlay.tsx": "file",
+          "LoginModal.tsx": "file",
+          "SyncStatus.tsx": "file",
+          "Toast.tsx": "file"
+        }
+      },
+      "index.css": "file",
+      "layout": {
+        "Footer.tsx": "file",
+        "Header.tsx": "file",
+        "Layout.tsx": "file"
+      },
+      "lib": {},
+      "main.tsx": "file",
+      "pages": {
+        "Dashboard.tsx": "file"
+      },
+      "types": {
+        "index.ts": "file"
+      },
+      "vite-env.d.ts": "file"
+    },
+    "tailwind.config.js": "file",
+    "tsconfig.json": "file",
+    "tsconfig.node.json": "file",
+    "vite.config.ts": "file"
+  }
+}

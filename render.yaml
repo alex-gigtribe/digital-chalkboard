@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: AdaginDigitalDepot
+    runtime: static
+    # The build command is the crucial part for a monorepo.
+    # It first installs all dependencies from the root package.json
+    # and its workspaces defines in package.json "workspaces":
+    #  [
+    # "frontend",
+    # "backend"
+    # ],
+    # Then it runs the build script for the 'frontend' workspace.
+    buildCommand: npm install && ./frontend/node_modules/.bin/vite build
+    staticPublishPath: ./frontend/dist
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 20.11.1
+      - key: NODE_ENV
+        value: production
