@@ -9,6 +9,7 @@ import axios from "axios";
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL, // change in .env for QA/Prod
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 // Holds JWT / session token for authenticated requests

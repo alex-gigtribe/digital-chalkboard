@@ -2,22 +2,19 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { setAuthToken } from "@/api/axiosClient";
 
-type User = {
-  username: string;
-  securityGroupId: string;
-};
+
 
 type AuthContextType = {
-  user: User | null;
+  user: SecurityGroupUser | null;
   token: string | null;
-  login: (user: User, token: string) => void;
+  login: (user: SecurityGroupUser, token: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SecurityGroupUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   // ✅ Restore from localStorage on mount
@@ -25,14 +22,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const savedUser = localStorage.getItem("authUser");
     const savedToken = localStorage.getItem("authToken");
     if (savedUser && savedToken) {
-      const parsedUser = JSON.parse(savedUser) as User;
+      const parsedUser = JSON.parse(savedUser) as SecurityGroupUser;
       setUser(parsedUser);
       setToken(savedToken);
       setAuthToken(savedToken);
     }
   }, []);
 
-  const login = (newUser: User, authToken: string) => {
+  const login = (newUser: SecurityGroupUser, authToken: string) => {
     setUser(newUser);
     setToken(authToken);
     localStorage.setItem("authUser", JSON.stringify(newUser));

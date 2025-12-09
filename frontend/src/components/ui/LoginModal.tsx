@@ -17,11 +17,14 @@ export default function LoginModal() {
     try {
       const data = await loginUser(username, password);
 
-      // store only user + token in AuthContext
-      login(
-        { username, securityGroupId: data.securityGroupId },
-        data.token
-      );
+      if (!data.isSuccess) {
+        setError(data.errorMessage || "Login failed. Please try again.");
+      } else{
+        login(
+          { username, securityGroupId: data.securityGroupId },
+          data.token
+        );
+      }
 
     } catch (err: any) {
       console.error("Login error:", err);

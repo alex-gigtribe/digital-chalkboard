@@ -1,7 +1,8 @@
+
 // endpoints/requestedEndpoints.ts
 export const API_ENDPOINTS = {
   // Authentication
-  login: "/api/account/login",              // POST - Security.SecurityGroup, Security.Session
+  login: "/application/authenticate",              // POST - Security.SecurityGroup, Security.Session
   
   // Depot Management  
   depots: "/api/zones/depots",              // GET - AdaginTech.Zone, AdaginTech.Farm
