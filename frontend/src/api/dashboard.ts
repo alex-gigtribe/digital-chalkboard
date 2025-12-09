@@ -70,7 +70,7 @@ function generateMockData(depotName: string): DashboardData {
 export async function fetchDashboard(depotId: string): Promise<DashboardData> {
   
   // DEV MODE - Generate mock data
-  if (import.meta.env.DEV) {
+  if (!import.meta.env.DEV) {
     const depotName = `Depot ${depotId}`;
     const mockData = generateMockData(depotName);
     

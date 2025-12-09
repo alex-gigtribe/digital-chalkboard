@@ -43,7 +43,7 @@ function generateMockQCData(): QCDetailsData {
 export async function fetchQCDetails(depotId: string): Promise<QCDetailsData> {
   
   // DEV MODE - Generate mock QC data
-  if (import.meta.env.DEV) {
+  if (!import.meta.env.DEV) {
     const mockData = generateMockQCData();
     console.log("[DEBUG] QC Details mock data:", mockData);
     return new Promise(resolve => setTimeout(() => resolve(mockData), 350));

@@ -35,7 +35,7 @@ function generateMockVarieties(): VarietiesData {
 export async function fetchVarieties(depotId: string): Promise<VarietiesData> {
   
   // DEV MODE - Generate mock varieties
-  if (import.meta.env.DEV) {
+  if (!import.meta.env.DEV) {
     const mockData = generateMockVarieties();
     console.log("[DEBUG] Varieties mock data:", mockData);
     return new Promise(resolve => setTimeout(() => resolve(mockData), 300));
